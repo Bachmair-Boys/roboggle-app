@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Interview Bot</string>
+    <string name="app_name">Roboggle</string>
     <string name="generateButton">Generate</string>
     <string name="categoryLabel">Category:</string>
     <string name="questionText">Choose a category and click \n to generate an interview question</string>

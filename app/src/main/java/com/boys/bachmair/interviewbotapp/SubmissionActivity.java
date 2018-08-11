@@ -23,8 +23,9 @@ public class SubmissionActivity extends AppCompatActivity {
         dropdown.setAdapter(adapter);
     }
 
-    public void changePage(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+    public void goBack(View view) {
+        /*Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);*/
+        finish();
     }
 }

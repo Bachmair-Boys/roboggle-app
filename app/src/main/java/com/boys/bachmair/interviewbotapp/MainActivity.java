@@ -33,8 +33,6 @@ import cz.msebera.android.httpclient.Header;
 
 
 public class MainActivity extends AppCompatActivity {
-    private static int number = 0;
-    private static String question = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Hashtable<String, Integer> types;
+    private int number = 0;
+    private String question = "";
 
     public void restApiCall() {
         RequestParams rp = new RequestParams();
@@ -107,13 +107,10 @@ public class MainActivity extends AppCompatActivity {
 
         TextView box = findViewById(R.id.questionText);
 
-
-
         int questionNumber = (int)(Math.random() * getQuestionQuantity(option));
         String question = getQuestion(option, questionNumber);
 
         box.setText(question);
-
     }
 
     public void changePage(View view) {
