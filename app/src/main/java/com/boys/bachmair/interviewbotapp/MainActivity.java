@@ -18,9 +18,18 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import com.loopj.android.http.*;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import cz.msebera.android.httpclient.Header;
 
 
 public class MainActivity extends AppCompatActivity {
+    private static int number = 0;
+    private static String question = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,30 +41,46 @@ public class MainActivity extends AppCompatActivity {
     private Hashtable<String, Integer> types;
 
     public void restApiCall() {
-        try {
-            URL url = new URL("https://interview-bot-server.herokuapp.com/");
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-            connection.setReadTimeout(10000);
-            connection.setConnectTimeout(15000);
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/json");
-
-            String input = "get-categories";
-
-            OutputStream os = connection.getOutputStream();
-            os.write(input.getBytes());
-            os.flush();
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        }
-        catch (MalformedURLException  e) {
-            e.printStackTrace();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        RequestParams rp = new RequestParams();
     }
+
+    private int getQuestionQuantity(int category) {
+        number = 0;
+        RequestParams rp = new RequestParams();
+        rp.add("category", Integer.toString(category));
+        HttpUtils.post("https://interview-bot-server.herokuapp.com/get-count", rp, new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    number = (Integer)response.get("count");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+        return number;
+    }
+
+    private String getQuestion(int category, int num) {
+        question = "";
+        RequestParams rp = new RequestParams();
+        rp.add("category", Integer.toString(category));
+        rp.add("question", Integer.toString(num));
+        HttpUtils.post("https://interview-bot-server.herokuapp.com/get-question", rp, new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    question = (String)response.get("question");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+        return "";
+    }
+
 
     public void generateDropdown() {
         Spinner dropdown = findViewById(R.id.dropdown);
@@ -75,5 +100,13 @@ public class MainActivity extends AppCompatActivity {
         int option = types.get(text);
 
         TextView box = findViewById(R.id.questionText);
+
+
+
+        int questionNumber = (int)(Math.random() * getQuestionQuantity(option));
+        String question = getQuestion(option, questionNumber);
+
+        box.setText(question);
+
     }
 }
