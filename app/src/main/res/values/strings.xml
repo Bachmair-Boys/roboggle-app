@@ -6,4 +6,6 @@
     <string name="submissionButton">Submit</string>
     <string name="submissionTitleText">Submit a Question</string>
     <string name="submissionBoxText">Enter interview question</string>
+    <string name="addButton">Add your own question</string>
+    <string name="backButton">Go back</string>
 </resources>

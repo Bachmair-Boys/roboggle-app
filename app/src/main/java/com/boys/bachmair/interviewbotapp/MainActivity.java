@@ -1,13 +1,18 @@
 package com.boys.bachmair.interviewbotapp;
 
+import android.content.Intent;
 import android.icu.util.Output;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Hashtable;
 
@@ -35,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         generateDropdown();
     }
 
@@ -108,5 +114,10 @@ public class MainActivity extends AppCompatActivity {
 
         box.setText(question);
 
+    }
+
+    public void changePage(View view) {
+        Intent intent = new Intent(this, SubmissionActivity.class);
+        startActivity(intent);
     }
 }
