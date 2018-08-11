@@ -1,5 +1,6 @@
 package com.boys.bachmair.interviewbotapp;
 
+import android.icu.util.Output;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,11 +9,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.sql.DriverManager;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.Hashtable;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,39 +29,51 @@ public class MainActivity extends AppCompatActivity {
         generateDropdown();
     }
 
-    private Connection connect() {
-        String url="";
-        Connection connection = null;
+    private Hashtable<String, Integer> types;
+
+    public void restApiCall() {
         try {
-            connection = DriverManager.getConnection(url);
+            URL url = new URL("https://interview-bot-server.herokuapp.com/");
+            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            connection.setReadTimeout(10000);
+            connection.setConnectTimeout(15000);
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+
+            String input = "get-categories";
+
+            OutputStream os = connection.getOutputStream();
+            os.write(input.getBytes());
+            os.flush();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         }
-        catch (SQLException e) {
-            Log.wtf("Interview Bot App", "Error connecting to database");
+        catch (MalformedURLException  e) {
             e.printStackTrace();
         }
-        return connection;
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void generateDropdown() {
-        String sql = "SELECT type FROM type";
-
-        try {
-            Connection connection = this.connect();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sql);
-        }
-        catch (SQLException e) {
-            Log.wtf("Interview Bot App", "Error reading database");
-            e.printStackTrace();
-        }
-
         Spinner dropdown = findViewById(R.id.dropdown);
         String[] categories = {"Basic", "Behavioral", "Salary", "Brainteaser"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
         dropdown.setAdapter(adapter);
+
+        types = new Hashtable<>();
+        for (int i = 0; i < categories.length; i++) {
+            types.put(categories[i], i);
+        }
     }
 
     public void generateQuestion(View view) {
+        Spinner dropdown = findViewById(R.id.dropdown);
+        String text = dropdown.getSelectedItem().toString();
+        int option = types.get(text);
+
         TextView box = findViewById(R.id.questionText);
     }
 }
