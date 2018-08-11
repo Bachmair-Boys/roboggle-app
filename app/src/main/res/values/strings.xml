@@ -1,3 +1,6 @@
 <resources>
-    <string name="app_name">Interview Bot App</string>
+    <string name="app_name">Interview Bot</string>
+    <string name="generate">Generate</string>
+    <string name="category">Category:</string>
+    <string name="title">Choose a category and click \n to generate and interview question</string>
 </resources>
